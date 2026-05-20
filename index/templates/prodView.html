@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% block home_active %} active {% endblock %}
+
+{% block title %} Quick Shop {% endblock %}
+
+{% block style %}
+.product-image {
+max-height: 400px;
+object-fit: cover;
+}
+
+.thumbnail {
+width: 80px;
+height: 80px;
+object-fit: cover;
+cursor: pointer;
+opacity: 0.6;
+transition: opacity 0.3s ease;
+}
+
+.thumbnail:hover,
+.thumbnail.active {
+opacity: 1;
+}
+{% endblock %}
+
+{% block content %}
+{% load static %}
+
+<div class="container mt-5">
+    <div class="row">
+        <!--  Product Images -->
+        <div class="col-md-6 mb-4"><img src="/media/{{ product.image }}" alt="Product"
+                class="img-fluid rounded mb-3 product-image" id="mainImage">
+
+        </div>
+        <!-- Product Details -->
+        <div class="col-md-6">
+            <h2 class="mb-3" id="namepr{{i.id}}">{{ product.product_name }}</h2>
+            <p class="text-muted mb-4">SKU: WH1000XM4</p>
+            <div class="mb-3"><span class="h4 me-2">&#8377;{{ product.price }} </span><span
+                    class="text-muted"><s>&#8377;{{ product.price|add:200 }}</s></span>
+            </div>
+            <div class="mb-3">
+                {% with product.rating as r %}
+                {% for i in "12345" %}
+                {% if forloop.counter <= r %}
+                <i class="bi bi-star-fill text-warning"></i>
+                {% elif forloop.counter <= r|add:"0.5" %} <i class="bi bi-star-half text-warning"></i>
+                {% else %}
+                <i class="bi bi-star text-warning"></i>
+                {% endif %}
+                {% endfor %}
+                {% endwith %}
+                <span class="ms-2">{{ product.rating }} ({{ product.reviews }} reviews)</span>
+            </div>
+            <p class="mb-4">{{ product.desc }}</p>
+            <div class="mb-4">
+                <h5>Color:</h5>
+                <div class="btn-group" role="group" aria-label="Color selection"><input type="radio" class="btn-check"
+                        name="color" id="black" autocomplete="off" checked><label class="btn btn-outline-dark"
+                        for="black">Black</label><input type="radio" class="btn-check" name="color" id="silver"
+                        autocomplete="off"><label class="btn btn-outline-secondary" for="silver">Silver</label><input
+                        type="radio" class="btn-check" name="color" id="blue" autocomplete="off"><label
+                        class="btn btn-outline-primary" for="blue">Blue</label></div>
+            </div>
+            <div class="mb-4">
+                <label for="quantity" class="form-label">Quantity:</label>
+                <input type="number" class="form-control" id="quantity" value="1" min="1" style="width: 80px;">
+            </div>
+            <span id="divpr{{ product.id }}" class="divpr">
+                <button
+                    class="btn btn-primary btn-lg mb-3 me-2 cart"
+                    data-id="{{ product.id }}"
+                    data-name="{{ product.product_name }}"
+                    data-price="{{ product.price }}"
+                    data-category="{{ product.category }}"
+                    data-image="{{ product.image.url }}">
+                    <i class="bi bi-cart-plus"></i> Add to Cart
+                </button>
+            </span>
+            {% comment %} <button class="btn btn-outline-secondary btn-lg mb-3" id="wishlistBtn">
+                <i class="bi bi-heart"></i> Add to Wishlist
+            </button> {% endcomment %}
+        </div>
+    </div>
+</div> {% endblock %}
+
+{% block script %}
+
+<script>
+
+    // CART LOGIC
+    let cart = {};
+
+    if (localStorage.getItem('cart') != null) {
+        cart = JSON.parse(localStorage.getItem('cart'));
+    }
+
+    updateCart(cart);
+    updatePopover(cart);
+
+    // Add to Cart
+    $('.divpr').on('click', 'button.cart', function () {
+
+        const productId = this.dataset.id;
+
+        if (cart[productId]) {
+
+            cart[productId][0] += 1;
+
+        } else {
+
+            cart[productId] = [
+                1,
+                this.dataset.name,
+                parseInt(this.dataset.price),
+                this.dataset.category,
+                this.dataset.image
+            ];
+        }
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+
+        updateCart(cart);
+        updatePopover(cart);
+    });
+
+
+    // Update Cart Count
+    function updateCart(cart) {
+        let sum = 0;
+        for (let id in cart) {
+            sum += cart[id][0];
+        }
+        document.getElementById('cart').innerHTML = sum;
+    }
+
+
+    // POPOVER EFFECT
+    $(function () {
+        $('#popcart').popover({
+            trigger: 'hover',
+            html: true,
+            content: 'Your cart is empty'
+        });
+
+    });
+
+    function updatePopover(cart) {
+        let popStr = "<h6>Your Cart</h6><div class='mx-2 my-2'>";
+        let i = 1;
+        for (let id in cart) {
+
+            popStr += `
+                <b>${i}</b>.
+                ${cart[id][1]}
+                (Qty: ${cart[id][0]})
+                <br>
+            `;
+
+            i++;
+        }
+
+        popStr += "</div>";
+
+        $('#popcart').attr('data-content', popStr);
+    }
+
+    
+</script>
+
+{% endblock %}

@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% block contact_active %} active {% endblock %}
+{% block title %} Quick Shop | Contact {% endblock %}
+
+{% block content %}
+{% if messages %}
+<div class="container-fluid m-0 p-0">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="container my-4">
+    <h2>Contact Us</h2>
+    <form method="post" action="/contact">
+        {% csrf_token %}
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="inputName4">Name</label>
+                <input type="Name" name="name" class="form-control" id="inputName4" placeholder="Enter your Name">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="inputEmail4">Email</label>
+                <input type="email" name="email" class="form-control" id="inputEmail4" placeholder="Enter your Email">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="inputAddress">Address</label>
+            <input type="text" class="form-control" name="address" id="inputAddress" placeholder="1234 Main St">
+        </div>
+        <div class="form-group">
+            <label for="inputAddress">Phone Number</label>
+            <input type="tel" class="form-control" name="phone" id="inputPhone" placeholder="1234567890">
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="inputCity">City</label>
+                <input type="text" name="city" class="form-control" id="inputCity" placeholder="Enter your City">
+            </div>
+            <div class="form-group col-md-4">
+                <label for="inputState">State</label>
+                <input type="text" name="state" class="form-control" id="inputCity" placeholder="Enter your State">
+            </div>
+            <div class="form-group col-md-2">
+                <label for="inputZip">Zip</label>
+                <input type="text" name="zip" class="form-control" id="inputZip" placeholder="Enter Zip Code">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="exampleFormControlTextarea1">How can We Help you?</label>
+            <textarea class="form-control" name="textarea" id="exampleFormControlTextarea1" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    // Find out the cart items from localStorage
+    if (localStorage.getItem('cart') == null) {
+        var cart = {};
+    } else {
+        cart = JSON.parse(localStorage.getItem('cart'));
+        updateCart(cart);
+    }
+
+    $('.divpr').on('click', 'button.cart', function () {
+        let id = this.id.replace('pr', '');
+
+        if (cart[id]) {
+            cart[id][0]++;
+        } else {
+            cart[id] = [
+                1,
+                this.dataset.name,
+                parseInt(this.dataset.price),
+                this.dataset.category,
+                this.dataset.image
+            ];
+        }
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCart(cart);
+    });
+
+
+
+
+    $(function () {
+        $('#popcart').popover({
+            trigger: 'hover',
+            html: true,
+            content: 'Your cart is empty'
+        });
+    });
+
+    function updatePopover(cart) {
+        let popStr = "<h6>Your Cart</h6><div class='mx-2 my-2'>";
+        let i = 1;
+
+        for (let id in cart) {
+            popStr += `<b>${i}</b>. ${cart[id][1]} (Qty: ${cart[id][0]})<br>`;
+            i++;
+        }
+
+        $('#popcart').attr('data-content', popStr);
+    }
+
+    if (localStorage.getItem('cart') != null) {
+        cart = JSON.parse(localStorage.getItem('cart'));
+        updatePopover(cart);
+    }
+
+    function updateCart(cart) {
+        let sum = 0;
+
+        for (let id in cart) {
+            sum += cart[id][0];
+
+            let div = document.getElementById('divpr' + id);
+            if (!div) continue;   // prevents crash
+
+            div.innerHTML = `
+            <button id="minus${id}" class="btn btn-primary minus">-</button>
+            <span id="val${id}">${cart[id][0]}</span>
+            <button id="plus${id}" class="btn btn-primary plus">+</button>
+        `;
+        }
+
+        document.getElementById('cart').innerText = sum;
+        updatePopover(cart);
+    }
+
+
+    // If plus or minus button is clicked, change the cart as well as the display value
+    $('.divpr').on('click', 'button.minus', function () {
+        let id = this.id.replace('minus', '');
+
+        cart[id][0]--;
+
+        if (cart[id][0] <= 0) {
+            delete cart[id];
+            document.getElementById('divpr' + id).innerHTML =
+                `<button id="pr${id}" class="btn btn-primary cart">Add To Cart</button>`;
+        } else {
+            document.getElementById('val' + id).innerText = cart[id][0];
+        }
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCart(cart);
+    });
+
+
+
+    $('.divpr').on('click', 'button.plus', function () {
+        let id = this.id.replace('plus', '');
+        cart[id][0]++;
+
+        document.getElementById('val' + id).innerText = cart[id][0];
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCart(cart);
+    });
+
+
+
+</script>
+
+{% endblock %}

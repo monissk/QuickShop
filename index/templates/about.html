@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+{% block about_active %} active {% endblock %}
+{% block title %} QuickShop | About {% endblock %}
+
+{% block content %}
+     <main role="main">
+
+      <!-- Main jumbotron for a primary marketing message or call to action -->
+      <div class="jumbotron">
+        <div class="container">
+          <h1 class="display-3">Wlcom to QuickShop</h1>
+          <p>QuickShop Inc. is an Indian e-commerce company, headquartered in Bengaluru, and incorporated in Singapore as a private limited company. The company initially focused on online book sales before expanding into other product categories such as consumer electronics, fashion, home essentials, groceries, and lifestyle products.In 2025, the company shifted domicile from Singapore to India.
+
+The service competes primarily with Amazon India and domestic rival Snapdeal.As of FY23, Flipkart held a 48% market share in the Indian e-commerce industry. Flipkart has a dominant position in the apparel segment, bolstered by its acquisition of Myntra, and was described as being "neck and neck" with Amazon in the sale of electronics and mobile phones.</p>
+          <p><a class="btn btn-primary btn-lg" href="/about" role="button">Learn more &raquo;</a></p>
+        </div>
+      </div>
+
+      <div class="container">
+        <!-- Example row of columns -->
+        <div class="row">
+          <div class="col-md-4">
+            <h2> Start-up phase</h2>
+            <p>Flipkart was founded in October 2007 in Bengaluru[12] by Sachin Bansal and Binny Bansal, alumni of the IIT Delhi and former Amazon employees. The company was started from a two-bedroom apartment in Koramangala, Bengaluru. The initial investment was provided by their families, which was INR 2 Lakh from each family. The website was kicked off in October 2007 and the company was only limited to selling books at that time. Flipkart slowly grew in prominence and was receiving 100 orders per day by 2008. Flipkart acquired WeRead in 2010 from Lulu.com that helped it build its foundational strength which was the digital retail of books.</p>
+            <p><a class="btn btn-secondary" href="/about" role="button">View details &raquo;</a></p>
+          </div>
+          <div class="col-md-4">
+            <h2>Growth, mergers and acquisitions</h2>
+            <p>In 2011, Flipkart acquired the digital distribution business Mime360.com[20] and the digital content library of the Bollywood portal Chakpak. Following the acquisition, Flipkart launched its DRM-free Digital music store Flyte in 2012. Due to competition from free streaming sites, Flyte was unsuccessful and shut down in June 2013. Mime360 was a content distributor that used HTTP-based encryption technology that allows for fast and secure data delivery. It distributed music, media and games using its distribution platform.</p>
+            <p><a class="btn btn-secondary" href="/about" role="button">View details &raquo;</a></p>
+          </div>
+          <div class="col-md-4">
+            <h2>present</h2>
+            <p>The e-commerce also started a virtual storefront that is dedicated to the academic needs of students named 'Flipkart Student's Club'.[95] The 'Flipkart Green' venture was created in 2023 for customers who want to have a sustainable lifestyle by providing certified sustainable products.
+
+Binny Bansal resigned from the executive team on 28 January 2024, and over the past few months, he has completely divested his stake. In the last year, Binny, along with Excel and Tiger Global Management, sold their entire stake to Walmart, resulting in Binny earning around 1.5 billion dollars. Walmart had acquired a 77% stake in Flipkart for 16 billion dollars in May 2018.</p>
+            <p><a class="btn btn-secondary" href="/about" role="button">View details &raquo;</a></p>
+          </div>
+        </div>
+
+        <hr>
+
+      </div> <!-- /container -->
+
+    </main>
+
+{% endblock %}
+
+{% block script %}
+<script>
+    // Find out the cart items from localStorage
+    if (localStorage.getItem('cart') == null) {
+        var cart = {};
+    } else {
+        cart = JSON.parse(localStorage.getItem('cart'));
+        updateCart(cart);
+    }
+
+    $('.divpr').on('click', 'button.cart', function () {
+        let id = this.id.replace('pr', '');
+
+        if (cart[id]) {
+            cart[id][0]++;
+        } else {
+            cart[id] = [
+                1,
+                this.dataset.name,
+                parseInt(this.dataset.price),
+                this.dataset.category,
+                this.dataset.image
+            ];
+        }
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCart(cart);
+    });
+
+
+
+
+    $(function () {
+        $('#popcart').popover({
+            trigger: 'hover',
+            html: true,
+            content: 'Your cart is empty'
+        });
+    });
+
+    function updatePopover(cart) {
+        let popStr = "<h6>Your Cart</h6><div class='mx-2 my-2'>";
+        let i = 1;
+
+        for (let id in cart) {
+            popStr += `<b>${i}</b>. ${cart[id][1]} (Qty: ${cart[id][0]})<br>`;
+            i++;
+        }
+
+        $('#popcart').attr('data-content', popStr);
+    }
+
+    if (localStorage.getItem('cart') != null) {
+        cart = JSON.parse(localStorage.getItem('cart'));
+        updatePopover(cart);
+    }
+
+    function updateCart(cart) {
+        let sum = 0;
+
+        for (let id in cart) {
+            sum += cart[id][0];
+
+            let div = document.getElementById('divpr' + id);
+            if (!div) continue;   // prevents crash
+
+            div.innerHTML = `
+            <button id="minus${id}" class="btn btn-primary minus">-</button>
+            <span id="val${id}">${cart[id][0]}</span>
+            <button id="plus${id}" class="btn btn-primary plus">+</button>
+        `;
+        }
+
+        document.getElementById('cart').innerText = sum;
+        updatePopover(cart);
+    }
+
+
+    // If plus or minus button is clicked, change the cart as well as the display value
+    $('.divpr').on('click', 'button.minus', function () {
+        let id = this.id.replace('minus', '');
+
+        cart[id][0]--;
+
+        if (cart[id][0] <= 0) {
+            delete cart[id];
+            document.getElementById('divpr' + id).innerHTML =
+                `<button id="pr${id}" class="btn btn-primary cart">Add To Cart</button>`;
+        } else {
+            document.getElementById('val' + id).innerText = cart[id][0];
+        }
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCart(cart);
+    });
+
+
+
+    $('.divpr').on('click', 'button.plus', function () {
+        let id = this.id.replace('plus', '');
+        cart[id][0]++;
+
+        document.getElementById('val' + id).innerText = cart[id][0];
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCart(cart);
+    });
+
+
+</script>
+
+{% endblock %}

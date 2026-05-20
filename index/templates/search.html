@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %} Search {% endblock %}
+
+{% block content %}
+
+<div class="container my-4">
+
+    <h2>Search Results</h2>
+
+    {% if msg %}
+        <h4>{{ msg }}</h4>
+    {% endif %}
+
+    <div class="row">
+
+    {% for product, range, nSlides in allProds %}
+
+        {% for i in product %}
+
+        <div class="col-md-3 my-3">
+
+            <div class="card" style="width: 18rem;">
+
+                <img src="/media/{{i.image}}" class="card-img-top" height="250px">
+
+                <div class="card-body">
+
+                    <h5 class="card-title">{{i.product_name}}</h5>
+
+                    <p class="card-text">{{i.desc|slice:"0:53"}}...</p>
+
+                    <h6>₹{{i.price}}</h6>
+
+                    <a href="/product/{{i.id}}/" class="btn btn-primary">
+                        View Product
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

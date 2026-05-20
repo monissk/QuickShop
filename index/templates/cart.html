@@ -1,0 +1,273 @@
+{% extends "base.html" %}
+{% block cart_active %} active {% endblock %}
+{% block title %} QuickShop | Cart {% endblock %}
+
+{% block content %}
+<!-- {% if messages %}
+<div class="container-fluid m-0 p-0">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %} -->
+<section class="h-100 h-custom" style="background-color: #eee;">
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body p-4">
+
+                        <div class="row">
+
+                            <div class="col-lg-7">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="mb-0">
+                                        <a href="/" class="text-body">
+                                            <i class="fas fa-long-arrow-alt-left me-2"></i>
+                                            Continue shopping
+                                        </a>
+                                    </h5>
+
+                                    <i class="fas fa-trash-alt text-danger" style="cursor:pointer;" title="Clear cart"
+                                        onclick="clearCart()"></i>
+                                </div>
+
+                                <hr>
+
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <div>
+                                        <p class="mb-1">Shopping cart</p>
+                                        <p id="item_qty" class="mb-0">You have 0 items in your cart</p>
+                                    </div>
+                                    <div>
+                                        <p class="mb-0"><span class="text-muted">Sort by:</span> <a href="#!"
+                                                class="text-body">price <i class="fas fa-angle-down mt-1"></i></a></p>
+                                    </div>
+                                </div>
+
+                                <div class="card mb-3">
+                                    <ul class="list-group" id="items">
+                                    </ul>
+                                </div>
+                            </div>
+
+
+
+                            <div class="col-lg-5">
+
+                                <div class="card bg-primary text-white rounded-3">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center mb-4">
+                                            <h5 class="mb-0">Card details</h5>
+
+                                        </div>
+                                        <a href="#!" type="submit" class="text-white"><i
+                                                class="fab fa-cc-mastercard fa-2x me-2"></i></a>
+                                        <a href="#!" type="submit" class="text-white"><i
+                                                class="fab fa-cc-visa fa-2x me-2"></i></a>
+                                        <a href="#!" type="submit" class="text-white"><i
+                                                class="fab fa-cc-amex fa-2x me-2"></i></a>
+                                        <a href="#!" type="submit" class="text-white"><i
+                                                class="fab fa-cc-paypal fa-2x"></i></a>
+
+                                        <form class="mt-4" method="post" action="/checkout">
+                                            {% csrf_token %}
+                                            <div data-mdb-input-init class="form-outline form-white mb-4">
+                                                <input type="text" name="cardHolderName" id="typeName"
+                                                    class="form-control form-control-lg" siez="17"
+                                                    placeholder="Cardholder's Name" />
+                                                <label class="form-label" for="typeName">Cardholder's Name</label>
+                                            </div>
+
+                                            <div data-mdb-input-init class="form-outline form-white mb-4">
+                                                <input type="text" id="cardNumber" name="cardNumber"
+                                                    class="form-control form-control-lg" siez="17"
+                                                    placeholder="1234 5678 9012 3457" minlength="19" maxlength="19" />
+                                                <label class="form-label" for="typeText">Card Number</label>
+                                            </div>
+
+                                            <div class="row mb-4">
+                                                <div class="col-md-6">
+                                                    <div data-mdb-input-init class="form-outline form-white">
+                                                        <input type="text" id="cardExpiry" name="cardExpiry"
+                                                            class="form-control form-control-lg" placeholder="MM/YYYY"
+                                                            size="7" id="exp" minlength="7" maxlength="7" />
+                                                        <label class="form-label" for="typeExp">Expiration</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div data-mdb-input-init class="form-outline form-white">
+                                                        <input type="password" id="cardCvv"
+                                                            class="form-control form-control-lg" name="cardCvv"
+                                                            placeholder="&#9679;&#9679;&#9679;" size="1" minlength="3"
+                                                            maxlength="3" />
+                                                        <label class="form-label" for="typeText">Cvv</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+
+                                            <hr class="my-4">
+
+                                            <div class="d-flex justify-content-between">
+                                                <p class="mb-2">Subtotal</p>
+                                                <p class="mb-2">₹<span id="totalPrice"></span></p>
+                                            </div>
+
+                                            <div class="d-flex justify-content-between">
+                                                <p class="mb-2">Shipping</p>
+                                                <p class="mb-2">₹70</p>
+                                            </div>
+
+                                            <div class="d-flex justify-content-between mb-4">
+                                                <p class="mb-2">Total(Incl. taxes)</p>
+                                                <p class="mb-2">₹<span id="TotalPrice" name="TotalPrice"></span></p>
+                                            </div>
+
+                                            <input type="hidden" name="itemsJson" id="itemsJson">
+                                            <input type="hidden" name="amount" id="amount">
+
+                                            <button type="submit" data-mdb-button-init data-mdb-ripple-init
+                                                class="btn btn-info btn-block btn-lg">
+                                                <div class="d-flex justify-content-between">
+                                                    <span>₹<span id="CheckoutPrice" name="TotalPrice"></span></span>
+                                                    <span>Checkout <i
+                                                            class="fas fa-long-arrow-alt-right ms-2"></i></span>
+                                                </div>
+                                            </button>
+
+                                        </form>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block script %}
+<script>
+    let cart = {};
+    if (localStorage.getItem('cart') !== null) {
+        cart = JSON.parse(localStorage.getItem('cart'));
+    }
+
+    console.log(cart);
+
+    let sum = 0;
+    let totalPrice = 0;
+
+    if ($.isEmptyObject(cart)) {
+        $('#items').html(
+            `<p class="text-center">Your cart is empty, please add items before checkout.</p>`
+        );
+    } else {
+        for (let item in cart) {
+            let qty = cart[item][0];
+            let name = cart[item][1];
+            let price = cart[item][2];
+            let category = cart[item][3];
+            let image = cart[item][4] || "/media/{{image}}";
+
+            sum += qty;
+            totalPrice += qty * price;
+
+            let mystr = `
+                <div class="card mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                    <div class="d-flex flex-row align-items-center">
+                        <img src="${image}"
+                    class="img-fluid rounded-3"
+                    alt="${name}"
+                    style="width: 65px;">
+
+                        <div class="ms-3 mx-3">
+                        <h5>${name}</h5>
+                        <p class="small mb-0">${category}</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-row align-items-center">
+                        <div style="width: 50px;">
+                        <h5 class="fw-normal mb-0">${qty}</h5>
+                        </div>
+                        <div style="width: 80px;">
+                        <h5 class="mb-0">₹${price * qty}</h5>
+                        </div>
+                        <a href="#" onclick="removeItem('${item}')" style="color:#cecece;">
+                        <i class="fas fa-trash-alt"></i>
+                        </a>
+                    </div>
+                    </div>
+                </div>
+                </div>`
+                ;
+
+            $('#items').append(mystr);
+        }
+    }
+
+    document.getElementById('cart').innerHTML = sum;
+    document.getElementById('item_qty').innerText =
+        `You have ${sum} item${sum !== 1 ? 's' : ''} in your cart`;
+    document.getElementById('totalPrice').innerHTML = totalPrice;
+    let TotalPrice = totalPrice + 70;
+    document.getElementById('TotalPrice').innerHTML = TotalPrice;
+    document.getElementById('CheckoutPrice').innerHTML = TotalPrice;
+
+
+    $('#itemsJson').val(JSON.stringify(cart));
+
+    {% if thank %}
+    alert(`Thanks for ordering with us. Your order id is ${id}.`);
+    localStorage.clear();
+    window.location.href = "/";
+    {% endif %}
+
+    // Remove item function
+    function removeItem(id) {
+        delete cart[id];
+        localStorage.setItem('cart', JSON.stringify(cart));
+        location.reload();
+    }
+    function clearCart() {
+        if (!confirm("Are you sure you want to clear the cart?")) {
+            return;
+        }
+
+        // Clear localStorage
+        localStorage.removeItem('cart');
+
+        // Reset cart count in navbar
+        const cartCount = document.getElementById('cart');
+        if (cartCount) {
+            cartCount.innerHTML = '0';
+        }
+
+        // Reload page to refresh UI
+        location.reload();
+    }
+    // {% if thank %}
+    // alert('Thanks for purchasing. Your Order is sucessfully Placed!');
+    // document.location = "/";
+    // {% endif %}
+    $('#amount').val($('#TotalPrice').html())
+    $('#itemsJson').val(JSON.stringify(cart));
+    $('#amount').val(TotalPrice);
+
+</script>
+{% endblock %}
