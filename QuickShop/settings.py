@@ -13,7 +13,7 @@ SECRET_KEY = 'django-insecure-1fb)xx=p@f42q$q0n!gj*$8_0s0vm2#i4e&$s_(xymq+695^kg
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['quickshop-u304.onrender.com']
 
 
 # Application definition
