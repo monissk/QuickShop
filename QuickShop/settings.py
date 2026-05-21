@@ -119,8 +119,8 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files (Images)
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = '/static/'
+MEDIA_ROOT = BASE_DIR / 'static'
 
 RAZORPAY_KEY_ID = 'rzp_test_Srd9EnyWJrM6hH'
 RAZORPAY_KEY_SECRET = '9vJ5nUpYU1QAUORjjWxkbELu'
