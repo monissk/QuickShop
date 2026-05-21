@@ -11,7 +11,7 @@ class Product(models.Model):
     reviews = models.IntegerField(default=0) 
     desc = models.CharField(max_length=300)
     pub_date = models.DateField()
-    image = models.ImageField(upload_to='images', default="")
+    image = models.CharField(max_length=255, default="")
 
     def __str__(self):
         return self.product_name
