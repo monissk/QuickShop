@@ -4,10 +4,17 @@
 {% block title %} Quick Shop | Shoes {% endblock %}
 
 {% block style %}
-.col-md-3
-{
-display: inline-block;
-margin-left:-4px;
+.card {
+    border: none;
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.carousel-item {
+    padding: 10px 0;
 }
 
 .carousel-indicators .active {
@@ -39,8 +46,16 @@ background-color: blue;
 
 .carousel-control-prev,
 .carousel-control-next {
-    top: 40%;
-    width: 5%;
+    width: 8%;
+    top: 45%;
+}
+
+.carousel-control-prev {
+    left: -70px;
+}
+
+.carousel-control-next {
+    right: -70px;
 }
 
 body .no-padding{
@@ -100,7 +115,7 @@ color : black
     data-name="{{ i.product_name }}"
     data-price="{{ i.price }}"
     data-category="{{ i.category }}"
-    data-image="{% static i.image %}"">
+    data-image="{% static i.image %}">
     Add To Cart
 </button>
 

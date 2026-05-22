@@ -4,10 +4,17 @@
 {% block title %} Quick Shop {% endblock %}
 
 {% block style %}
-.col-md-3
-{
-display: inline-block;
-margin-left:-4px;
+.card {
+    border: none;
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.carousel-item {
+    padding: 10px 0;
 }
 
 .carousel-indicators .active {
@@ -39,7 +46,16 @@ background-color: blue;
 
 .carousel-control-prev,
 .carousel-control-next {
-    top: 40%;
+    width: 8%;
+    top: 45%;
+}
+
+.carousel-control-prev {
+    left: -70px;
+}
+
+.carousel-control-next {
+    right: -70px;
 }
 
 body .no-padding{
@@ -93,10 +109,16 @@ color : black
                                 <p class="card-text">{{i.desc|slice:"0:53"}}...</p>
                                 <h6 class="card-title">Price: <span id="pricepr{{i.id}}">{{i.price}}</span></h6>
                                 <span id="divpr{{i.id}}" class="divpr">
-                                    <button id="pr{{ i.id }}" class="btn btn-primary cart"
-                                        data-name="{{ i.product_name }}" data-price="{{ i.price }}"
-                                        data-category="{{ i.category }}" data-image="{% static i.image %}">Add To
-                                        Cart</button>
+                                    <button
+    id="pr{{ i.id }}"
+    class="btn btn-primary cart"
+    data-id="{{ i.id }}"
+    data-name="{{ i.product_name }}"
+    data-price="{{ i.price }}"
+    data-category="{{ i.category }}"
+    data-image="{% static i.image %}">
+    Add To Cart
+</button>
                                 </span>
                             </div>
                         </div>
