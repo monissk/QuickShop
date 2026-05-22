@@ -81,8 +81,8 @@ color : black
             <div class="container carousel-inner no-padding">
                 <div class="carousel-item active">
                     {% for i in product %}
-                    <div class="col-6 col-md-3 mb-4">
-                        <div class="card align-items-center h-100 shadow-sm">
+                    <div class="col-6 col-md-3">
+                        <div class="card align-items-center h-100 shadow-sm m-2">
                             <a href="{% url 'prodView' i.id %}"><img src="{% static i.image %}"
                                     class="card-img-top product-card m-2" alt="..."></a>
                             <div class="card-body">
@@ -94,7 +94,7 @@ color : black
                                 <span id="divpr{{i.id}}" class="divpr">
                                     <button id="pr{{ i.id }}" class="btn btn-primary cart"
                                         data-name="{{ i.product_name }}" data-price="{{ i.price }}"
-                                        data-category="{{ i.category }}" data-image="{{ i.image.url }}">Add To
+                                        data-category="{{ i.category }}" data-image="{% static i.image.name %}">Add To
                                         Cart</button>
                                 </span>
                             </div>
