@@ -7,6 +7,10 @@
 .card {
     border: none;
     transition: 0.3s;
+    min-height: 100%;
+}
+.card-text {
+    min-height: 80px;
 }
 
 .card:hover {
@@ -37,6 +41,9 @@ background-color: #7270fc;
 
 body .carousel-indicators{
 bottom: -35px;;
+}
+.carousel {
+    width: 100%;
 }
 
 body .carousel-control-prev-icon,
@@ -86,8 +93,8 @@ color : black
     <!--Slideshow starts here -->
     {% for product, range, nSlides in allProds %}
     <h5 class="my-4">Flash Sale On {{product.0.category}} - Recommended Items</h5>
-    <div class="row">
-        <div id="demo{{forloop.counter}}" class="col carousel slide my-3" data-ride="carousel">
+    <div class="my-4">
+    <div id="demo{{forloop.counter}}" class="carousel slide" data-ride="carousel">
             <ul class="carousel-indicators">
                 <li data-target="#demo{{forloop.counter}}" data-slide-to="0" class="active"></li>
                 {% for i in range %}
