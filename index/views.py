@@ -4,6 +4,7 @@ from .models import Product, Contact, Orders, OrderUpdate
 from math import ceil
 from datetime import datetime
 from django.contrib import messages
+import razorpay
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
